@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var db = require('../db/db');
+var db = require('../data/db');
 
 
 /* GET search results. */
@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 // calculate cosine simmilarity
 // get page rank
 
-//console.log(db.getPageRanks(["j","i","h"]));
+//console.log(data.getPageRanks(["j","i","h"]));
 console.log(db.getPageRanks(["j","i","h"], function(err, data) {
     console.log(data);
 }));
