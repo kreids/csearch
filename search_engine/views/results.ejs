@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSSEARCH</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src ="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="/javascripts/results.js"></script>
+</head>
+<body>
+<h1>CSSearch Results</h1>
+<div id="search-container">
+    <input type="text" name="query" placeholder="Enter a search query..." id="search-input" value="<%= searchQuery %>"><br>
+    <input type="submit" value="Submit" id="search-submit">
+</div>
+<div id="results-container">
+</div>
+</body>
+</html>
