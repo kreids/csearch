@@ -13,11 +13,21 @@ html, body {
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+
+    display: -webkit-flex;
+    -webkit-flex-direction: column;;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
 }
 
 
 #homescreen-container #logo-container {
     margin-top: 50px;
+    height: 100px;
+}
+
+#homescreen-container #logo-container img {
+    height: 100%;
 }
 
 #homescreen-container #search-container {
@@ -30,6 +40,11 @@ html, body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
 }
 
 #homescreen-container #search-container #search-input{
@@ -38,10 +53,7 @@ html, body {
     padding-left: 10px;
     padding-right: 10px;
     border: 1px solid lightgray;
-
 }
-
-
 
 #homescreen-container #search-container #search-submit {
     background: #C92632;
@@ -50,6 +62,71 @@ html, body {
     color: white;
     height: 40px;
     width: 170px;
-    margin: auto;
+    margin-top: 20px;
 }
 
+
+/**
+* RESULTS PAGE
+*/
+#header-container {
+    background: #253068;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+#header-container #logo-container {
+    height: 100%;
+    display: inline-block;
+}
+
+#header-container #logo-container img {
+    height: 40px;
+    margin: 10px;
+}
+
+#header-container #search-container {
+    height: 40px;
+    width: 100%;
+}
+
+#header-container #search-container input {
+    height: 100%;
+}
+
+#header-container #search-container #search-input {
+    border: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 20px;
+    width: 450px;
+}
+
+#results-container {
+    margin: 10px;
+}
+
+
+
+#loading-view h3 {
+    text-align: center;
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+#loading-gif-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    /*height: 120px;*/
+    height: 100%;
+    width: 100%;
+}
+
+#loading-view img {
+    height: 300px;
+}

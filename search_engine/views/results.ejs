@@ -9,12 +9,24 @@
     <script src="/javascripts/results.js"></script>
 </head>
 <body>
-<h1>CSSearch Results</h1>
-<div id="search-container">
-    <input type="text" name="query" placeholder="Enter a search query..." id="search-input" value="<%= searchQuery %>"><br>
-    <input type="submit" value="Submit" id="search-submit">
+<div id="header-container">
+    <div id="logo-container">
+        <a href="/"></ad><img src="/images/logo.png"/></a>
+    </div>
+    <div id="search-container">
+        <input type="text" name="query" placeholder="Enter a search query..." id="search-input" value="<%= searchQuery %>">
+        <input type="submit" value="Submit" id="search-submit">
+    </div>
 </div>
 <div id="results-container">
 </div>
+
+<div id="loading-view">
+    <h3>Gathering search results...</h3>
+    <div id="loading-gif-container">
+        <img src="/images/rotating-cube-alpha.gif"/>
+    </div>
+</div>
+
 </body>
 </html>

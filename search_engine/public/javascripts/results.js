@@ -8,6 +8,7 @@ app = (function() {
     SEARCH_SUBMIT_ID = "#search-submit";
     SEARCH_INPUT_ID = "#search-input";
     RESULTS_CONTAINER_ID = "#results-container";
+    LOADING_VIEW_ID = "#loading-view";
 
 
     var getQuery = function() {
@@ -23,6 +24,7 @@ app = (function() {
         var getRequestUrl = "/search/?searchQuery=" + encodeURIComponent(query);
         var searchResults = $.get(getRequestUrl)
             .done(function(data) {
+                $(LOADING_VIEW_ID).hide();
                 console.log("search results: " + data);
                 populateSearchResults(data);
              })
@@ -43,9 +45,18 @@ app = (function() {
         if (query != null) window.location.replace("/results?searchQuery=" + encodeURIComponent(query));
     }
 
+    var keypressHandler = function(e) {
+        if(e.which == 13) {
+            searchSubmitHandler();
+        }
+    };
+
     var attachEventHandlers = function() {
         $(SEARCH_SUBMIT_ID).click(searchSubmitHandler);
+        $(SEARCH_INPUT_ID).keypress(keypressHandler);
     }
+
+
 
     return {
         initialize: function () {
