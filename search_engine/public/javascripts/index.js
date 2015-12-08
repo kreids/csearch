@@ -5,9 +5,6 @@ app = (function() {
     SEARCH_SUBMIT_ID = "#search-submit";
     SEARCH_INPUT_ID = "#search-input";
 
-
-
-
     var searchSubmitHandler = function() {
         console.log("search submitted");
         var query = $(SEARCH_INPUT_ID).val();
@@ -25,7 +22,6 @@ app = (function() {
         initialize: function () {
             console.log("app initialized");
             attachEventHandlers();
-
         }
     }
 

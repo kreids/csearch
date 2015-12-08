@@ -1,8 +1,55 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
 }
 
-a {
-  color: #00B7FF;
+#homescreen-container {
+    background: #253068;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 }
+
+
+#homescreen-container #logo-container {
+    margin-top: 50px;
+}
+
+#homescreen-container #search-container {
+    margin-top: 50px;
+    max-width: 580px;
+    width: 100%;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#homescreen-container #search-container #search-input{
+    width: 100%;
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid lightgray;
+
+}
+
+
+
+#homescreen-container #search-container #search-submit {
+    background: #C92632;
+    border: none;
+    border-radius: 0px;
+    color: white;
+    height: 40px;
+    width: 170px;
+    margin: auto;
+}
+
