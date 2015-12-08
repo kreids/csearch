@@ -33,18 +33,18 @@ var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 /**
  * GET ITEM
  */
-var params = {
-    TableName: 'uiTest',
-    Key : {
-        url: "google.com"
-    }
-};
-
-dynamodbDoc.get(params, function(err, data) {
-    if (err) {
-        console.log(err); // an error occurred
-    }
-    else {
-        console.log(data); // successful response
-    }
-});
+//var params = {
+//    TableName: 'pagerank-results',
+//    Key : {
+//        url: "j"
+//    }
+//};
+//
+//dynamodbDoc.get(params, function(err, data) {
+//    if (err) {
+//        console.log(err); // an error occurred
+//    }
+//    else {
+//        console.log(data); // successful response
+//    }
+//});
