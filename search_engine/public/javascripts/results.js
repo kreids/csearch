@@ -37,7 +37,15 @@ app = (function() {
     }
 
     var populateSearchResults = function(results) {
-        $(RESULTS_CONTAINER_ID).append("<h1>added search results:" + results + "</h1>")
+        $(RESULTS_CONTAINER_ID).append("<ul>");
+        for (var i = 0; i < results.length; i++) {
+            $(RESULTS_CONTAINER_ID).append("<li>");
+            if (results[i].hasOwnProperty('title')) $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].title + "</h3>");
+            else $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].url + "</h3>");
+            $(RESULTS_CONTAINER_ID).append("<a href=\"" + results[i].url + "\">" + results[i].url + "</a>");
+            $(RESULTS_CONTAINER_ID).append("</li>");
+        };
+        $(RESULTS_CONTAINER_ID).append("</ul>");
     };
 
     var searchSubmitHandler = function() {

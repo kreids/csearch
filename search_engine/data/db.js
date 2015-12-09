@@ -10,15 +10,18 @@ AWS.config.update({
 var dynamodb = new AWS.DynamoDB();
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 
-var PAGE_RANK_TABLE_NAME = "pagerank-results";
-var PAGE_RANK_KEY_NAME = "url";
+exports.PAGE_RANK_TABLE_NAME = "pagerank-test2";
+exports.PAGE_RANK_KEY_NAME = "url";
 
-var TFIDF_TABLE_NAME = "InverseIndex";
-var TFIDF_KEY_NAME = "word";
+exports.TFIDF_TABLE_NAME = "indextest2";
+exports.TFIDF_KEY_NAME = "word";
 
+exports.TITLES_TABLE_NAME = "titles";
+exports.TITLES_KEY_NAME = "url";
 
+//
 //var params = {
-//    TableName: TFIDF_TABLE_NAME /* required */
+//    TableName: "indextest2" /* required */
 //};
 //
 //dynamodb.describeTable(params, function(err, data) {
@@ -26,12 +29,12 @@ var TFIDF_KEY_NAME = "word";
 //    else     console.log(JSON.stringify(data));           // successful response
 //});
 
+// takes array of words
 exports.getTfIdfs = function(words, callback) {
-
     var wordKeyValPairs = [];
     words.forEach(function(word) {
         var obj = {};
-        obj[TFIDF_KEY_NAME] = word;
+        obj[exports.TFIDF_KEY_NAME] = word;
         wordKeyValPairs.push(obj);
     });
 
@@ -39,11 +42,11 @@ exports.getTfIdfs = function(words, callback) {
         RequestItems: {}
     };
 
-    params.RequestItems[TFIDF_TABLE_NAME] = {Keys: wordKeyValPairs};
+    params.RequestItems[exports.TFIDF_TABLE_NAME] = {Keys: wordKeyValPairs};
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else     console.log(JSON.stringify(data.Responses[TFIDF_TABLE_NAME]));           // successful response
+        else     callback(err, data);           // successful response
     });
 };
 //
@@ -66,22 +69,47 @@ exports.getPageRanks = function(urls, callback) {
     var urlKeyValPairs = [];
     urls.forEach(function(url) {
         var obj = {};
-        obj[PAGE_RANK_KEY_NAME] = url;
+        obj[exports.PAGE_RANK_KEY_NAME] = url;
         urlKeyValPairs.push(obj);
     });
 
+    //var params = {
+    //    RequestItems: {
+    //        'pagerank-test2': {
+    //            Keys: [{url: "http://www.theguardian.com/business/currencies"}]
+    //        }
+    //    }
+    //};
+
     var params = {
-        RequestItems: {
-            'pagerank-results': {
-                Keys: [{url: "j"},{url: "i"},{url: "h"}]
-            }
-        }
+        RequestItems: {}
     };
 
-    console.log(JSON.stringify(params));
+    params.RequestItems[exports.PAGE_RANK_TABLE_NAME] = {Keys: urlKeyValPairs};
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else     console.log(data.Responses[PAGE_RANK_TABLE_NAME]);           // successful response
+        else     callback(err,data);           // successful response
+    });
+};
+
+exports.getPageTitles = function(titles, callback) {
+
+    var KeyValPairs = [];
+    titles.forEach(function(url) {
+        var obj = {};
+        obj[exports.TITLES_KEY_NAME] = url;
+        KeyValPairs.push(obj);
+    });
+
+    var params = {
+        RequestItems: {}
+    };
+
+    params.RequestItems[exports.TITLES_TABLE_NAME] = {Keys: KeyValPairs};
+
+    dynamodbDoc.batchGet(params, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else     callback(err,data);
     });
 };
