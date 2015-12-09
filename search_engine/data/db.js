@@ -46,7 +46,7 @@ exports.getTfIdfs = function(words, callback) {
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else     callback(err, data);           // successful response
+        callback(err, data);           // successful response
     });
 };
 //
@@ -89,7 +89,7 @@ exports.getPageRanks = function(urls, callback) {
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else     callback(err,data);           // successful response
+        callback(err,data);           // successful response
     });
 };
 
@@ -110,6 +110,6 @@ exports.getPageTitles = function(titles, callback) {
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else     callback(err,data);
+        callback(err,data);
     });
 };

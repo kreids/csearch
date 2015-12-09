@@ -37,15 +37,18 @@ app = (function() {
     }
 
     var populateSearchResults = function(results) {
-        $(RESULTS_CONTAINER_ID).append("<ul>");
+        if (results.type === 'fail') $(RESULTS_CONTAINER_ID).append("<h3>No search results found</h3>")
         for (var i = 0; i < results.length; i++) {
-            $(RESULTS_CONTAINER_ID).append("<li>");
+            $(RESULTS_CONTAINER_ID).append("<div id=\"result-continer\">");
             if (results[i].hasOwnProperty('title')) $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].title + "</h3>");
             else $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].url + "</h3>");
             $(RESULTS_CONTAINER_ID).append("<a href=\"" + results[i].url + "\">" + results[i].url + "</a>");
-            $(RESULTS_CONTAINER_ID).append("</li>");
+            $(RESULTS_CONTAINER_ID).append("<p> totalScore: " + results[i].rankScore +
+                "<br/> pageRankScore: " + results[i].pageRankScore +
+                "<br/> cosineScore: " + results[i].cosineScore +
+                "</p>");
+            $(RESULTS_CONTAINER_ID).append("</div>");
         };
-        $(RESULTS_CONTAINER_ID).append("</ul>");
     };
 
     var searchSubmitHandler = function() {
@@ -63,8 +66,6 @@ app = (function() {
         $(SEARCH_SUBMIT_ID).click(searchSubmitHandler);
         $(SEARCH_INPUT_ID).keypress(keypressHandler);
     }
-
-
 
     return {
         initialize: function () {
