@@ -66,7 +66,8 @@ var calcQueryIdf = function(queryWords, tfidfData, urls) {
             return e.word === word;
         });
         var docCount = tfidfEntry.length > 0 ? tfidfEntry[0].mapList.length : 0;
-        var idfScore = 1 + Math.log(urls.length / docCount);
+        if (docCount === 0) var idfScore = 0;
+        else var idfScore = 1 + Math.log(urls.length / docCount);
         idfScores[word] = idfScore;
     });
     return idfScores;
@@ -115,8 +116,10 @@ var calculateCosineSimilarity = function(queryWords, queryTfs, queryIdfs, tfidfD
             } else var tfidf = 0;
             doctfIdfsVec[i] = Number(tfidf);
         }
+        console.log(querytfIdfsVec, doctfIdfsVec);
         cosineScores[url] = similarity(querytfIdfsVec, doctfIdfsVec);
     });
+    console.log(cosineScores);
     return cosineScores;
 };
 
