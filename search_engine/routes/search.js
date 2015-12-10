@@ -8,6 +8,7 @@ var jsdom = require('jsdom').jsdom;
 var document = jsdom('<html></html>', {});
 var window = document.defaultView;
 var $ = require('jquery')(window);
+//var similarity = require( 'compute-cosine-similarity' );
 
 
 
@@ -56,7 +57,6 @@ var getWordFrequency = function(word, arr) {
 };
 
 var calcTermFrequencyScore = function(queryWords) {
-    console.log(queryWords);
     var tfScores = {};
     queryWords.forEach(function(word) {
         var wordFreq =  getWordFrequency(word, queryWords);
@@ -73,7 +73,7 @@ var calcQueryIdf = function(queryWords, tfidfData, urls) {
         });
         var docCount = tfidfEntry.length > 0 ? tfidfEntry[0].mapList.length : 0;
         if (docCount === 0) var idfScore = 0;
-        else var idfScore = 1 + Math.log(urls.length / docCount);
+        else var idfScore = 1 + Math.log(db.TFIDF_ITEM_COUNT / docCount);
         idfScores[word] = idfScore;
     });
     return idfScores;
@@ -93,6 +93,8 @@ function norm(a) {
 };
 
 var similarity = function(a, b) {
+    console.log(docProduct(a,b));
+    console.log(norm(a) * norm(b));
     return docProduct(a,b) / (norm(a) * norm(b));
 }
 
@@ -110,9 +112,7 @@ var calculateCosineSimilarity = function(queryWords, queryTfs, queryIdfs, tfidfD
             var tfidfWordEntry = $.grep(tfidfData, function (e) {
                 return e.word === word;
             });
-            //console.log("wordEntry: " + tfidfWordEntry);
             var tfidfList = tfidfWordEntry.length > 0 ? tfidfWordEntry[0].mapList : null;
-            //console.log(tfidfList);
 
             if (tfidfList !== null) {
                 var tfidfObj = $.grep(tfidfList, function (e) {
@@ -122,10 +122,9 @@ var calculateCosineSimilarity = function(queryWords, queryTfs, queryIdfs, tfidfD
             } else var tfidf = 0;
             doctfIdfsVec[i] = Number(tfidf);
         }
-        console.log(querytfIdfsVec, doctfIdfsVec);
-        cosineScores[url] = similarity(querytfIdfsVec, doctfIdfsVec);
+        if (queryWords.length > 1) cosineScores[url] = similarity(querytfIdfsVec, doctfIdfsVec);
+        else cosineScores[url] = doctfIdfsVec[0];
     });
-    console.log(cosineScores);
     return cosineScores;
 };
 

@@ -13,20 +13,21 @@ var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 exports.PAGE_RANK_TABLE_NAME = "pagerank-test2";
 exports.PAGE_RANK_KEY_NAME = "url";
 
-exports.TFIDF_TABLE_NAME = "indextest2";
+exports.TFIDF_TABLE_NAME = "index1";
 exports.TFIDF_KEY_NAME = "word";
+exports.TFIDF_ITEM_COUNT = 1078;
 
 exports.TITLES_TABLE_NAME = "titles";
 exports.TITLES_KEY_NAME = "url";
 
-//
+
 //var params = {
-//    TableName: "indextest2" /* required */
+//    TableName: exports.TFIDF_TABLE_NAME /* required */
 //};
 //
 //dynamodb.describeTable(params, function(err, data) {
 //    if (err) console.log(err, err.stack); // an error occurred
-//    else     console.log(JSON.stringify(data));           // successful response
+//    else     console.log(data.Table.ItemCount);           // successful response
 //});
 
 // takes array of words
