@@ -13,14 +13,20 @@ var $ = require('jquery')(window);
 
 /* GET search results. */
 router.get('/', function(req, res, next) {
-    var query = req.query.searchQuery.toLowerCase();
+    var query = req.query.searchQuery.toLowerCase().trim();
     var deferred = $.Deferred();
     deferred.done(function (rankedPages) {
-        res.send(rankedPages);
+        rankedPages.query = req.query.searchQuery;
+        res.send({
+            type: "results",
+            query: req.query.searchQuery,
+            rankedPages: rankedPages
+        });
     }).fail(function(err) {
         console.log("fail");
         res.send({
-            type: "fail"
+            type: "fail",
+            query: req.query.searchQuery
         });
     });
     getSearchResults(query, deferred);

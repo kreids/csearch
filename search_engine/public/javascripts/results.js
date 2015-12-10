@@ -37,17 +37,21 @@ app = (function() {
     }
 
     var populateSearchResults = function(results) {
-        if (results.type === 'fail') $(RESULTS_CONTAINER_ID).append("<h3>No search results found</h3>")
-        for (var i = 0; i < results.length; i++) {
-            $(RESULTS_CONTAINER_ID).append("<div id=\"result-continer\">");
-            if (results[i].hasOwnProperty('title')) $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].title + "</h3>");
-            else $(RESULTS_CONTAINER_ID).append("<h3>" + results[i].url + "</h3>");
-            $(RESULTS_CONTAINER_ID).append("<a href=\"" + results[i].url + "\">" + results[i].url + "</a>");
-            $(RESULTS_CONTAINER_ID).append("<p> totalScore: " + results[i].rankScore +
-                "<br/> pageRankScore: " + results[i].pageRankScore +
-                "<br/> cosineScore: " + results[i].cosineScore +
+        console.log(results);
+        var rankedPages = results.rankedPages;
+        if (results.type === 'fail') $(RESULTS_CONTAINER_ID).append("<h3>No search results found</h3>");
+        else $(RESULTS_CONTAINER_ID).append("<h3>Search results found for '" + results.query + "'</h3>");
+        for (var i = 0; i < rankedPages.length; i++) {
+            $(RESULTS_CONTAINER_ID).append("<div class=\"result-container\">");
+            var div = $(".result-container:last");
+            if (rankedPages[i].hasOwnProperty('title')) div.append("<a href=\"" + rankedPages[i].url + "\">" + rankedPages[i].title + "</a>");
+            else div.append("<a href=\"" + rankedPages[i].url + "\">" + rankedPages[i].url + "</a>");
+
+            div.append("<span class=\"url\">" + rankedPages[i].url + "</span>");
+            div.append("<p> totalScore: " + rankedPages[i].rankScore +
+                "<br/> pageRankScore: " + rankedPages[i].pageRankScore +
+                "<br/> cosineScore: " + rankedPages[i].cosineScore +
                 "</p>");
-            $(RESULTS_CONTAINER_ID).append("</div>");
         };
     };
 
