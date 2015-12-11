@@ -1,3 +1,5 @@
+awiss
+
 PageRank of graph in DynamoDB, implemented in spark.
 This is running on java 1.8, the virtual machine is 1.7!
 
