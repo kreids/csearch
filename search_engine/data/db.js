@@ -1,6 +1,10 @@
 /**
  * Created by adamcole on 12/8/15.
  */
+var jsdom = require('jsdom').jsdom;
+var document = jsdom('<html></html>', {});
+var window = document.defaultView;
+var $ = require('jquery')(window);
 var AWS = require('aws-sdk');
 AWS.config.update({
     region: "us-west-2",
@@ -10,7 +14,7 @@ AWS.config.update({
 var dynamodb = new AWS.DynamoDB();
 var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
 
-exports.PAGE_RANK_TABLE_NAME = "pagerank-test2";
+exports.PAGE_RANK_TABLE_NAME = "pagerank-results";
 exports.PAGE_RANK_KEY_NAME = "url";
 
 exports.TFIDF_TABLE_NAME = "index1";
@@ -31,7 +35,21 @@ exports.TITLES_KEY_NAME = "url";
 //});
 
 // takes array of words
-exports.getTfIdfs = function(words, callback) {
+
+exports.getAllPageTfIdfs = function(words) {
+    var deferreds = [];
+    var intervals = Math.floor(words.length / 100);
+    for (var i = 0; i < intervals + 1; i++) {
+        var endSlice = ((i+1)*100 > words.length)? words.length : (i+1)*100;
+        var wordsSlice = words.slice(i*100,endSlice);
+        deferreds.push(exports.getTfIdfs(wordsSlice));
+    }
+    return $.when.apply($, deferreds);
+};
+
+exports.getTfIdfs = function(words) {
+    var deferred = $.Deferred();
+
     var wordKeyValPairs = [];
     words.forEach(function(word) {
         var obj = {};
@@ -42,31 +60,33 @@ exports.getTfIdfs = function(words, callback) {
     var params = {
         RequestItems: {}
     };
-
     params.RequestItems[exports.TFIDF_TABLE_NAME] = {Keys: wordKeyValPairs};
 
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        callback(err, data);           // successful response
+        deferred.resolve({
+            err: err,
+            data: data
+        });           // successful response
     });
+    return deferred;
 };
-//
-//var getPageRank = function(urls, callback) {
-//    var params = {
-//        "RequestItems": {
-//            PAGE_RANK_TABLE_NAME: {
-//                Keys: [urls]
-//            }
-//        }
-//    }
-//
-//    dynamodbDoc.get(params, function(err, data) {
-//        callback(err, data)
-//    });
-//}
 
-exports.getPageRanks = function(urls, callback) {
 
+exports.getAllPageRanks = function(urls) {
+    var deferreds = [];
+    var intervals = Math.floor(urls.length / 100);
+    for (var i = 0; i < intervals + 1; i++) {
+        var endSlice = ((i+1)*100 > urls.length)? urls.length : (i+1)*100;
+        var urlsSlice = urls.slice(i*100,endSlice);
+        deferreds.push(exports.getPageRanks(urlsSlice));
+    }
+    return $.when.apply($, deferreds);
+};
+
+
+exports.getPageRanks = function(urls) {
+    var deferred = $.Deferred();
     var urlKeyValPairs = [];
     urls.forEach(function(url) {
         var obj = {};
@@ -74,27 +94,34 @@ exports.getPageRanks = function(urls, callback) {
         urlKeyValPairs.push(obj);
     });
 
-    //var params = {
-    //    RequestItems: {
-    //        'pagerank-test2': {
-    //            Keys: [{url: "http://www.theguardian.com/business/currencies"}]
-    //        }
-    //    }
-    //};
-
     var params = {
         RequestItems: {}
     };
-
     params.RequestItems[exports.PAGE_RANK_TABLE_NAME] = {Keys: urlKeyValPairs};
 
     dynamodbDoc.batchGet(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        callback(err,data);           // successful response
+        if (err) console.log(err, err.stack);
+        deferred.resolve({
+            err: err,
+            data: data
+        });           // successful response
     });
+    return deferred;
 };
 
-exports.getPageTitles = function(titles, callback) {
+exports.getAllPageTitles = function(titles) {
+    var deferreds = [];
+    var intervals = Math.floor(titles.length / 100);
+    for (var i = 0; i < intervals + 1; i++) {
+        var endSlice = ((i+1)*100 > titles.length)? titles.length : (i+1)*100;
+        var titleSlice = titles.slice(i*100,endSlice);
+        deferreds.push(exports.getPageTitles(titleSlice));
+    }
+    return $.when.apply($, deferreds);
+};
+
+exports.getPageTitles = function(titles) {
+    var deferred = $.Deferred();
 
     var KeyValPairs = [];
     titles.forEach(function(url) {
@@ -108,9 +135,12 @@ exports.getPageTitles = function(titles, callback) {
     };
 
     params.RequestItems[exports.TITLES_TABLE_NAME] = {Keys: KeyValPairs};
-
     dynamodbDoc.batchGet(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        callback(err,data);
+        deferred.resolve({
+            err: err,
+            data: data
+        });
     });
+    return deferred;
 };

@@ -44,7 +44,7 @@ var getUrlList = function(tfidfObj) {
     $.each(urls, function(i, el){
          uniqueUrls.push(el);
     });
-    return urls;
+    return uniqueUrls;
 };
 
 
@@ -79,24 +79,45 @@ var calcQueryIdf = function(queryWords, tfidfData, urls) {
     return idfScores;
 };
 
-var docProduct = function(a,b) {
+var dotProduct = function(a,b) {
     var n = 0;
     var lim = Math.min(a.length, b.length);
     for (var i = 0; i < lim; i++) n += a[i] * b[i];
     return n;
 };
 
-function norm(a) {
+function normalize(a) {
+    var len = length(a);
+    for (var i = 0; i < a.length; i++) {
+        a[i] = a[i] / len;
+    }
+    return a;
+}
+
+function length(a) {
     var sumsqr = 0;
     for (var i = 0; i < a.length; i++) sumsqr += a[i]*a[i];
     return Math.sqrt(sumsqr);
 };
 
 var similarity = function(a, b) {
-    console.log(docProduct(a,b));
-    console.log(norm(a) * norm(b));
-    return docProduct(a,b) / (norm(a) * norm(b));
-}
+    return dotProduct(normalize(a), normalize(b));
+};
+
+var isOneTermQuery = function(querytfIdfsVec) {
+    var termsWithVal = 0;
+    querytfIdfsVec.forEach(function(val) {
+        if (val > 0) termsWithVal++;
+    });
+    return termsWithVal > 1;
+};
+
+var getOneTermVal = function(doctfIdfsVec) {
+    for (var i = 0; i < doctfIdfsVec.length; i++) {
+        if (doctfIdfsVec[i] > 0) return doctfIdfsVec[i];
+    }
+    return 1;
+};
 
 var calculateCosineSimilarity = function(queryWords, queryTfs, queryIdfs, tfidfData, urls) {
     var cosineScores = {};
@@ -120,10 +141,11 @@ var calculateCosineSimilarity = function(queryWords, queryTfs, queryIdfs, tfidfD
                 });
                 var tfidf = tfidfObj.length > 0 ? tfidfObj[0]['tf-idf'] : 0;
             } else var tfidf = 0;
-            doctfIdfsVec[i] = Number(tfidf);
+            doctfIdfsVec[i] = Math.abs(Number(tfidf));
         }
-        if (queryWords.length > 1) cosineScores[url] = similarity(querytfIdfsVec, doctfIdfsVec);
-        else cosineScores[url] = doctfIdfsVec[0];
+        console.log("querytfIdfsVec: ", isOneTermQuery(querytfIdfsVec));
+        if (isOneTermQuery(querytfIdfsVec)) cosineScores[url] = similarity(querytfIdfsVec, doctfIdfsVec);
+        else cosineScores[url] = getOneTermVal(doctfIdfsVec);
     });
     return cosineScores;
 };
@@ -137,7 +159,7 @@ var rankPages = function(cosineScores, prData, urls) {
         var prEntry = $.grep(prData, function (e) {
             return e.url === url;
         });
-        var pageRank = prEntry.length > 0 ? prEntry[0]['rank'] : 0;
+        var pageRank = prEntry.length > 0 ? prEntry[0]['rank'] : .00001;
         var cosineScore = cosineScores[url];
 
         var rankScore = cosineScore * pageRank;
@@ -148,7 +170,6 @@ var rankPages = function(cosineScores, prData, urls) {
             cosineScore: cosineScore
         })
     });
-
     var sortedPageRankPairs = pageScorePairs.sort(function (a,b) {
         if (a.rankScore > b.rankScore) return -1;
         else if (a.rankScore < b.rankScore) return 1;
@@ -171,17 +192,28 @@ var removeDuplicates = function(names) {
     return uniqueNames;
 };
 
-/* getSearchResults queries the db to get the data to
-   generate a list of ranked search results
- */
+
+var parseDBData = function(data, tableName) {
+    var args = Array.prototype.slice.call(data);
+    var tfidfDataArr = Array.prototype.slice.call(args);
+    var tfidfData = [];
+    tfidfDataArr.forEach(function(tfidfObj) {
+        if (tfidfObj.err || !isDataValid(tfidfObj.data)) {
+            return null;
+        }
+        else tfidfData = tfidfData.concat(tfidfObj.data.Responses[tableName]);
+    });
+    return tfidfData;
+};
+
 var getSearchResults = function(query, deffered) {
     var queryWords = query.split(" ");
-    db.getTfIdfs(queryWords, function(err, data) {
-        if (err || !isDataValid(data)) {
+    db.getAllPageTfIdfs(queryWords).done(function() {
+        var tfidfData = parseDBData(arguments, db.TFIDF_TABLE_NAME);
+        if (tfidfData == null) {
             deffered.reject();
             return;
         }
-        var tfidfData = data.Responses[db.TFIDF_TABLE_NAME];
         var urls = [];
         tfidfData.forEach(function (tfidfObj){
             urls = urls.concat(getUrlList(tfidfObj));
@@ -189,29 +221,28 @@ var getSearchResults = function(query, deffered) {
         urls = removeDuplicates(urls);
 
         var queryTfs = calcTermFrequencyScore(queryWords);
+        console.log(queryTfs);
         var queryIdfs = calcQueryIdf(queryWords, tfidfData, urls);
+        console.log(queryIdfs);
         var cosineScores = calculateCosineSimilarity(queryWords, queryTfs, queryIdfs, tfidfData, urls);
-
-        db.getPageRanks(urls, function(err, data) {
-            if (err || !isDataValid(data)) {
+        db.getAllPageRanks(urls).done(function() {
+            var prData = parseDBData(arguments, db.PAGE_RANK_TABLE_NAME);
+            if (prData == null) {
                 deffered.reject();
                 return;
             }
-            var prData = data.Responses[db.PAGE_RANK_TABLE_NAME];
             var rankedPages = rankPages(cosineScores, prData, urls);
-            db.getPageTitles(urls, function (err, data) {
-                if (err || !isDataValid(data)) {
-                    deffered.reject();
-                    return;
-                }
-                var titleData = data.Responses[db.TITLES_TABLE_NAME];
-                for (var i = 0; i < rankedPages.length; i++) {
-                    var titleObj = $.grep(titleData, function (e) {
-                        return e.url === rankedPages[i].url;
-                    });
-                    if (titleObj.length > 0) rankedPages[i].title = titleObj[0].title;
-                }
+            db.getAllPageTitles(urls).done(function () {
+                var titleData = parseDBData(arguments, db.TITLES_TABLE_NAME);
 
+                if (titleData !== null || titleData !== undefined) {
+                    for (var i = 0; i < rankedPages.length; i++) {
+                        var titleObj = $.grep(titleData, function (e) {
+                            return e.url === rankedPages[i].url;
+                        });
+                        if (titleObj.length > 0) rankedPages[i].title = titleObj[0].title;
+                    }
+                }
                 deffered.resolve(rankedPages);
             });
         });
