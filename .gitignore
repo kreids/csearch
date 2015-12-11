@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -38,3 +39,9 @@ node_modules
 .gitignore
 
 .elasticbeanstalk/
+
+.idea/
+
+pagerank/project/project/
+pagerank/project/target/
+pagerank/target/
