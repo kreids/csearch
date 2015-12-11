@@ -1,6 +1,13 @@
 /**
  * Created by adamcole on 12/7/15.
  */
+/**
+ * index shows the homepage of the search engine. This includes an
+ * input field as well as autocomplete functionality. Queries are sent
+ * to the server and a results page is loaded.
+ */
+
+
 app = (function() {
     SEARCH_SUBMIT_ID = "#search-submit";
     SEARCH_INPUT_ID = "#search-input";

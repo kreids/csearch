@@ -1,6 +1,10 @@
 var fs = require('fs');
 var dictionary = [];
 
+/**
+ * dictionary loads in a dictionary of common english words
+ */
+
 fs.readFile('data/wiktionary.txt', 'utf8', function (err, data) {
     if (err) {
         return console.log(err);

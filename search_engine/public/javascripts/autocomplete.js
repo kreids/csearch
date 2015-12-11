@@ -1,6 +1,12 @@
 /**
  * Created by adamcole on 12/8/15.
  */
+
+/**
+ * autocomplete module takes a query and provides possible
+ * words to complete the phrase
+ */
+
 autocomplete = (function() {
     SEARCH_INPUT_ID = "#search-input";
     AUTOCOMPLETE_CONTAINER_ID = "#autocomplete-container";

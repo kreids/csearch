@@ -1,3 +1,7 @@
+/**
+ * Sets up routes for the app as well as error handlers
+ */
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -6,11 +10,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var search = require('./routes/search');
 var autocomplete = require('./routes/autocomplete');
-
-var testAws = require('./testAws');
 
 var app = express();
 
@@ -27,7 +28,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/search', search);
 app.use('/autocomplete', autocomplete);
 

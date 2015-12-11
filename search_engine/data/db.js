@@ -6,6 +6,12 @@ var document = jsdom('<html></html>', {});
 var window = document.defaultView;
 var $ = require('jquery')(window);
 var AWS = require('aws-sdk');
+
+/**
+ * db provides access to the DynamoDB tables for tfidf, pagerank, and titles
+ */
+
+
 AWS.config.update({
     region: "us-west-2",
     endpoint: "dynamodb.us-west-2.amazonaws.com"

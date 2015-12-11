@@ -8,8 +8,12 @@ var jsdom = require('jsdom').jsdom;
 var document = jsdom('<html></html>', {});
 var window = document.defaultView;
 var $ = require('jquery')(window);
-//var similarity = require( 'compute-cosine-similarity' );
 
+/**
+ * search gets /search routes. It takes queries passed in the url, processes
+ * them by looking up the word's tfidf scores and pageranks, uses an algorithm
+ * to rank the urls and returns the ranked data to the client.
+ */
 
 
 /* GET search results. */

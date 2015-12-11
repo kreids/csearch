@@ -4,6 +4,12 @@
 /**
  * Created by adamcole on 12/7/15.
  */
+
+/**
+ * app loads the search engine as a results page. The app handles
+ * sending the query to the server and displaying results that are returned.
+ */
+
 app = (function() {
     SEARCH_SUBMIT_ID = "#search-submit";
     SEARCH_INPUT_ID = "#search-input";

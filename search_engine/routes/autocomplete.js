@@ -3,6 +3,10 @@
  *//**
  * Created by adamcole on 12/7/15.
  */
+/**
+ * routes autocomplete ajax requests to dictionary module and returns result
+ */
+
 var express = require('express');
 var router = express.Router();
 var dictionary = require("../data/dictionary");
