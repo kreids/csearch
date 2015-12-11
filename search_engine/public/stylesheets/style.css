@@ -94,7 +94,7 @@ html, body {
 
 #header-container #logo-container img {
     height: 40px;
-    margin: 10px;
+    margin: 10px 10px 10px 20px;
 }
 
 #header-container #search-container {
@@ -110,14 +110,9 @@ html, body {
     border: 0;
     padding-left: 10px;
     padding-right: 10px;
-    margin-left: 20px;
+    margin-left: 10px;
     width: 450px;
 }
-
-#results-container {
-    margin: 10px;
-}
-
 
 
 #loading-view h3 {
@@ -164,6 +159,11 @@ html, body {
     padding: 3px 0px;
     color: darkGray;
     padding-left: 20px;
+}
+
+#results-container {
+    margin: 10px;
+    margin-left: 180px;
 }
 
 #results-container h3 {
