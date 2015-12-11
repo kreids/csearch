@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.11.4"
 
 
-libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.9.40"
+//libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.9.40"
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % "1.5.2"
 
@@ -20,6 +20,7 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
     case PathList("com", "google", xs @ _*) => MergeStrategy.last
     case PathList("com", "esotericsoftware", xs @ _*) => MergeStrategy.last
     case PathList("com", "codahale", xs @ _*) => MergeStrategy.last
+    case PathList("org", "jets3t", xs @ _*) => MergeStrategy.last
     case PathList("com", "fasterxml", xs @ _*) => MergeStrategy.last
     case PathList("com", "yammer", xs @ _*) => MergeStrategy.last
     case "about.html" => MergeStrategy.rename
