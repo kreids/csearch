@@ -13,4 +13,4 @@ the search engine. Each component of the project has its own README which descri
 part in more detail.
  
 ### Final Report
-Our final report can be found here: https://docs.google.com/document/d/1D8QkA3YS7O--wR5iPr4mqCs7-xEbbr1Au2H6OK4XOXI/edit?usp=sharing 
+Our final report can be found as a LaTeX PDF file in this repository. 
